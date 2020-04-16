@@ -3,41 +3,60 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(LineRenderer))]
+[RequireComponent(typeof(EdgeCollider2D))]
 public class Line : MonoBehaviour
 {
-    public LineRenderer lineRenderer;
-    public EdgeCollider2D edgeCollider;
+    private  LineRenderer lineRenderer = null;
+    //private EdgeCollider2D edgeCollider;
+    //public Shader shader;
 
-    List<Vector2> points;
+    List<Vector2> points = null;
 
     // Start is called before the first frame update
     void Start()
     {
+        lineRenderer = GetComponent<LineRenderer>();
+        //edgeCollider = GetComponent<EdgeCollider2D>();
+        lineRenderer.positionCount = 0;
+       
         
+        lineRenderer.useWorldSpace = true;
+        
+
+        points = new List<Vector2>();
     }
 
     // Update is called once per frame
-    public void LineUpdate(Vector2 mousePos)
+    public void Update()
     {
-        if(points == null)
+        if (Input.GetMouseButtonUp(0))
         {
-            points = new List<Vector2>();
-            SetPoint(mousePos);
-            return;
+            if(lineRenderer != null)
+            {
+                lineRenderer.positionCount = 0;
+            }
 
+            if(points != null)
+            {
+                points.Clear();
+            }
         }
-        if(Vector2.Distance(points.Last(), mousePos) > .1f)
+
+        if (Input.GetMouseButtonDown(0))
         {
-            SetPoint(mousePos);
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            worldPos.z = 0.0f;
+
+            if(points.Contains(worldPos)== false)
+            {
+                points.Add(worldPos);
+
+                lineRenderer.positionCount = points.Count;
+                lineRenderer.SetPosition(lineRenderer.positionCount - 1, worldPos);
+            }
         }
     }
 
-    void SetPoint(Vector2 point)
-    {
-        points.Add(point);
-
-        lineRenderer.positionCount++;
-        lineRenderer.SetPosition(lineRenderer.positionCount - 1, point);
-        edgeCollider.points = points.ToArray();
-    }
+    
 }
