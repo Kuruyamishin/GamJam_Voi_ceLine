@@ -11,7 +11,7 @@ public class Line : MonoBehaviour
     //private EdgeCollider2D edgeCollider;
     //public Shader shader;
 
-    List<Vector2> points = null;
+    public List<Vector2> points = null;
 
     // Start is called before the first frame update
     void Start()
@@ -43,7 +43,7 @@ public class Line : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             worldPos.z = 0.0f;
